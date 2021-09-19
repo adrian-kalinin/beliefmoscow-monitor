@@ -1,8 +1,8 @@
 import logging
 import time
 
+import database as db
 import scraper
-import models
 import settings
 
 
@@ -14,9 +14,9 @@ logging.basicConfig(
 
 
 def configure_database():
-    models.database.connect()
-    models.database.create_tables([models.Product])
-    models.database.close()
+    db.database.connect()
+    db.database.create_tables([db.Product])
+    db.database.close()
     logging.info('Database has been configured')
 
 
@@ -29,7 +29,7 @@ def retrieve_new_products():
     new_products = []
 
     for product in target_products:
-        _, created = models.Product.get_or_create(product_id=product['id'])
+        _, created = db.Product.get_or_create(product_id=product['id'])
 
         if created:
             new_products.append(product)
