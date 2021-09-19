@@ -7,4 +7,4 @@ PAGE_SIZE = 100
 
 SQLITE_PATH = 'db.sqlite3'
 
-DELAY = 5
+DELAY = 1

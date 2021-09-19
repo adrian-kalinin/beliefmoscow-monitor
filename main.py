@@ -1,3 +1,4 @@
+import logging
 import time
 
 import scraper
@@ -5,13 +6,23 @@ import models
 import settings
 
 
+logging.basicConfig(
+    format='%(asctime)s – %(levelname)s – %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.INFO
+)
+
+
 def configure_database():
     models.database.connect()
     models.database.create_tables([models.Product])
     models.database.close()
+    logging.info('Database has been configured')
 
 
 def retrieve_new_products():
+    logging.info('Searching for new products')
+
     products = scraper.retrieve_products()
     target_products = scraper.search_keywords(products)
 
@@ -31,6 +42,8 @@ def main():
 
     while True:
         if new_products := retrieve_new_products():
+            logging.info(f'Found {len(new_products)} new products')
+
             for product in new_products:
                 print(product)
 
