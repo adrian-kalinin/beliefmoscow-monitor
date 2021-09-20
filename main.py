@@ -46,8 +46,11 @@ def main():
             logging.info(f'Found {len(new_products)} new products')
 
             for product in new_products:
-                embed_product = discord.prepare_embed(product)
-                discord.send_message(embed_product)
+                if product['link'] not in settings.BLACKLIST:
+                    embed_product = discord.prepare_embed(product)
+                    discord.send_message(embed_product)
+
+                time.sleep(settings.DELAY)
 
         time.sleep(settings.DELAY)
 

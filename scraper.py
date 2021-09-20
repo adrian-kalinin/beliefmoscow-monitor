@@ -8,17 +8,24 @@ def _extract_useful_data(product):
     data = {
         'id': product['id'],
         'title': product['title'],
+        'total_stock': 0,
         'link': settings.BASE_URL + product['url'],
         'image_url': product['images'][0]['original_url'],
         'sizes': []
     }
 
     for variant in product['variants']:
-        data['sizes'].append({
-            'title': variant['title'],
-            'quantity': variant['quantity'],
-            'price': variant['price']
-        })
+        if variant['quantity'] > 0:
+            data['sizes'].append({
+                'title': variant['title'],
+                'quantity': variant['quantity'],
+                'price': variant['price']
+            })
+
+            data['total_stock'] += variant['quantity']
+
+    if data['total_stock'] > 0:
+        data['price'] = product['variants'][0]['price'].replace('.0', '')
 
     return data
 
@@ -38,7 +45,7 @@ def retrieve_products():
         products = []
 
         for page in range(number_of_pages):
-            current_path = settings.COLLECTION_PATH.format(page_size=settings.PAGE_SIZE, page=page+1)
+            current_path = settings.COLLECTION_PATH.format(page_size=settings.PAGE_SIZE, page=page + 1)
             response = requests.get(settings.BASE_URL + current_path)
 
             if response.status_code == 200:
@@ -53,8 +60,15 @@ def search_keywords(products):
 
     for product in products:
         for keyword in settings.KEYWORDS:
-            if keyword in product['title'].lower():
-                product_data = _extract_useful_data(product)
-                target_products.append(product_data)
+            product_title = product['title'].lower()
+
+            if keyword in product_title:
+                for negative_keyword in settings.NEGATIVE_KEYWORDS:
+                    if negative_keyword in product_title:
+                        break
+
+                else:
+                    product_data = _extract_useful_data(product)
+                    target_products.append(product_data)
 
     return target_products
