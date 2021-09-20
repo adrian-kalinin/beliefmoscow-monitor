@@ -3,6 +3,7 @@ import time
 
 import database as db
 import scraper
+import discord
 import settings
 
 
@@ -45,7 +46,8 @@ def main():
             logging.info(f'Found {len(new_products)} new products')
 
             for product in new_products:
-                print(product)
+                embed_product = discord.prepare_embed(product)
+                discord.send_message(embed_product)
 
         time.sleep(settings.DELAY)
 

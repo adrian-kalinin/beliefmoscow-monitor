@@ -9,6 +9,7 @@ def _extract_useful_data(product):
         'id': product['id'],
         'title': product['title'],
         'link': settings.BASE_URL + product['url'],
+        'image_url': product['images'][0]['original_url'],
         'sizes': []
     }
 
