@@ -1,4 +1,5 @@
 import requests
+import logging
 import math
 
 import settings
@@ -39,6 +40,9 @@ def get_number_of_pages():
 
         return math.ceil(data['count'] / settings.PAGE_SIZE)
 
+    else:
+        logging.warning('Status code is NOT 200')
+
 
 def retrieve_products():
     if number_of_pages := get_number_of_pages():
@@ -51,6 +55,9 @@ def retrieve_products():
             if response.status_code == 200:
                 data = response.json()
                 products.extend(data['products'])
+
+            else:
+                logging.warning('Status code is NOT 200')
 
         return products
 
