@@ -32,7 +32,7 @@ def _extract_useful_data(product):
 
 def get_number_of_pages():
     current_path = settings.COLLECTION_PATH.format(page_size=settings.PAGE_SIZE, page=1)
-    response = requests.get(settings.BASE_URL + current_path)
+    response = requests.get(settings.BASE_URL + current_path, proxies=next(settings.PROXY_CYCLE))
 
     if response.status_code == 200:
         data = response.json()
@@ -46,7 +46,7 @@ def retrieve_products():
 
         for page in range(number_of_pages):
             current_path = settings.COLLECTION_PATH.format(page_size=settings.PAGE_SIZE, page=page + 1)
-            response = requests.get(settings.BASE_URL + current_path)
+            response = requests.get(settings.BASE_URL + current_path, proxies=next(settings.PROXY_CYCLE))
 
             if response.status_code == 200:
                 data = response.json()

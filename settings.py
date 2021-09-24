@@ -1,8 +1,12 @@
 import dotenv
 import os
 
+from utils import get_proxy_generator
+
 
 dotenv.load_dotenv()
+
+PROXY_CYCLE = get_proxy_generator()
 
 DISCORD_WEBHOOK_URL = os.getenv('DISCORD_WEBHOOK_URL')
 
